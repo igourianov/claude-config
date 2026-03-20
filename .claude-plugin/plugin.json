@@ -1,0 +1,9 @@
+{
+  "name": "claude",
+  "version": "0.1.0",
+  "description": "Personal Claude Code plugin with custom skills and agents",
+  "author": {
+    "name": "Ilia Gourianov"
+  },
+  "license": "MIT"
+}
