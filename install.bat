@@ -19,9 +19,11 @@ for %%F in ("%REPO_DIR%\*") do (
 for /d %%D in ("%REPO_DIR%\*") do (
     set "DIRNAME=%%~nxD"
     set "LINK=%TARGET_DIR%\!DIRNAME!"
-    if exist "!LINK!" rmdir "!LINK!"
+    if exist "!LINK!" rmdir /s /q "!LINK!"
     mklink /d "!LINK!" "%%D"
 )
 
 echo.
 echo Done.
+
+pause
