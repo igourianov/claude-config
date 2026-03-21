@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
-set "REPO_DIR=%~dp0symlinks"
+for %%I in ("%~dp0..\symlinks") do set "REPO_DIR=%%~fI"
 set "TARGET_DIR=%USERPROFILE%\.claude"
 
 echo Installing symlinks from %REPO_DIR% to %TARGET_DIR%
