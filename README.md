@@ -1,6 +1,4 @@
-# CLAUDE.md
-
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+# README
 
 ## Purpose
 
@@ -18,14 +16,9 @@ This repository manages Claude Code user configuration. It contains files that g
 
 ## Installation
 
-```powershell
-powershell -ExecutionPolicy Bypass -File install.ps1
-```
-
-This prompts for UAC elevation, then symlinks everything from `symlinks/` into `~/.claude`.
+Run `install.ps1`. This prompts for UAC elevation, then symlinks everything from `symlinks/` into `~/.claude`.
 
 ## Key Details
 
-- The Bash tool runs under Git Bash on Windows. Always use `/dev/null` for output suppression, never `nul` or `NUL`.
 - `install.bat` uses `mklink` which requires elevated privileges. Always run through `install.ps1` or an admin command prompt.
 - After adding or modifying files under `symlinks/`, re-run install only if adding new top-level entries. Existing symlinks automatically reflect changes to their targets.
