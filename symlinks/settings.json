@@ -1,2 +1,4 @@
 {
+	"tui": "fullscreen",
+	"remoteControlAtStartup": false
 }
