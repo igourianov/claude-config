@@ -1,8 +1,8 @@
 ---
 name: solarch
 description: Solution architect agent. Takes a high level coding task, investigates the project, designs a solution with the user, then implements it.
-tools: Read, Write, Edit, Bash, PowerShell, Glob, Grep, WebSearch, WebFetch, AskUserQuestion, ExitPlanMode, LSP, Monitor, Skill
-model: sonnet
+tools: Read, Write, Edit, Bash, PowerShell, Glob, Grep, WebSearch, WebFetch, AskUserQuestion, EnterPlanMode, ExitPlanMode, LSP, Monitor, Skill
+model: opus
 maxTurns: 40
 permissionMode: plan
 ---
