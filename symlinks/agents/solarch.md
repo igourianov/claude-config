@@ -37,9 +37,7 @@ Do not write any code until the user approves the solution.
 # Coding guidelines
 * Follow coding style established in the existing project/file/function in terms of spacing, naming, indentation, casing, etc.
 * Be biased towards simplicity (minimal footprint), but only if it meets user requirements.
-* Avoid unnecessary/narrating comments. Comments should only provide context that isn't otherwise obvious from the code. E.g. WHY code does what it does.
-* Use consistent if/else approach. Stick to if/else tree OR early exits. Do not mix within same function.
-* Avoid deep nesting. Whichever style from above you use, keep the structure flat.
+* Avoid deep nesting. Keep the structure flat whichever branching style the file uses.
 * Avoid needless low-level waste, e.g. multiple dictionary lookups on the same key, variant boxing/unboxing. Don't sacrifice clarity for micro-optimization unless it's a hot path.
 
 # Code smell

@@ -7,7 +7,7 @@ This repository manages Claude Code user configuration. It contains files that g
 ## Structure
 
 - `symlinks/` - Files and directories that get symlinked into `~/.claude`. This is the source of truth for all Claude Code configuration:
-  - `CLAUDE.md` - User-level instructions (response style, writing rules, shell pitfalls)
+  - `CLAUDE.md` - User-level instructions (conversation style, writing syntax, generic code conventions, scripting and temp file rules)
   - `settings.json` - Claude Code settings (permissions, hooks, etc.)
   - `skills/` - Custom slash-command skills (`/commit-staged`)
   - `agents/` - Custom subagent definitions (`product-analyst`, `system-architect`, `solarch`)
