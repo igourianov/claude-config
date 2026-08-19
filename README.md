@@ -9,8 +9,8 @@ This repository manages Claude Code user configuration. It contains files that g
 - `symlinks/` - Files and directories that get symlinked into `~/.claude`. This is the source of truth for all Claude Code configuration:
   - `CLAUDE.md` - User-level instructions (response style, writing rules, shell pitfalls)
   - `settings.json` - Claude Code settings (permissions, hooks, etc.)
-  - `skills/` - Custom slash-command skills (`/commit`, `/commit-staged`)
-  - `agents/` - Custom subagent definitions (`product-analyst`, `system-architect`)
+  - `skills/` - Custom slash-command skills (`/commit-staged`)
+  - `agents/` - Custom subagent definitions (`product-analyst`, `system-architect`, `solarch`)
 - `windows/` - Windows installation scripts:
   - `install.bat` - Creates symlinks from `symlinks/*` into `~/.claude`. Requires admin privileges (uses `mklink`).
   - `install.ps1` - Wrapper that runs `install.bat` elevated via UAC.
