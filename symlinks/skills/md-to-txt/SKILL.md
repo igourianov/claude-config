@@ -25,7 +25,7 @@ If neither a file path nor inline markdown is supplied, ask the user for the inp
 - **Numbered lists** - Keep ordered list numbering as `1)`, `2)`, `3)` etc. Preserve indentation for nested levels and let each nested level restart its own numbering.
 - **Links** - Strip markdown link syntax `[text](url)` and keep the display text. If the URL differs from the display text and is useful to the reader, append it after the text. If the URL already contains the display text, drop the display text and keep just the cleaned URL (e.g. `[github](http://github.com/igourianov)` -> `github.com/igourianov`).
 - **Bold/Italic** - Remove `**`, `*`, `__`, `_` markers while keeping the enclosed text.
-- **Headings** - Remove the heading markers. Uppercase and underline the text of `#` (h1) headings. Leave deeper headings (`##` and below) in their original case and do not decorate with separator lines or underlines.
+- **Headings** - Remove the heading markers. Uppercase the text of `#` (h1) headings and underline with a `=` line matching its length. Leave deeper headings (`##` and below) in their original case and do not decorate with separator lines or underlines.
 - **Section spacing** - Separate major sections with a single blank line.
 - **Code blocks** - Remove backtick fencing and keep the content.
 - **Tables** - Convert to aligned plain text using whitespace padding, or a simple delimited format if alignment is impractical.
