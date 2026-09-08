@@ -47,5 +47,5 @@ Then anything that blocked you: doc gaps, ambiguities, cases it didn't cover.
 Don't restate the doc, don't explain your reasoning at length and don't summarize the diff line by line. The reviewer reads the diff.
 
 # Code
-* Follow the user's global and project code conventions. A project's own guide wins over both. If the global conventions aren't already in your context, read `~/.claude/CLAUDE.md` before writing.
+* Follow the user's global and project code conventions. A project's own guide wins over both.
 * Don't commit. The user reviews and commits.
