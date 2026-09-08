@@ -26,6 +26,13 @@ Whenever I ask you to remember something, update CLAUDE.md or rules files in eit
 
 Language-agnostic defaults. A project's own guide overrides these where they conflict.
 
+### General
+
+- Follow the style established in the file and function being edited: spacing, naming, indentation, casing. It wins over these defaults.
+- Be biased towards simplicity and minimal footprint, but only where it still meets the requirements.
+- Avoid deep nesting. Keep the structure flat whichever branching style the file uses.
+- Avoid needless low-level waste, e.g. multiple dictionary lookups on the same key, variant boxing/unboxing. Don't sacrifice clarity for micro-optimization unless it's a hot path.
+
 ### Formatting
 
 - Prefer tabs over spaces for indentation. Exception: a file managed by an external tool, e.g. `.claude/settings.local.json` is managed by Claude, which will always overwrite it with spaces.
@@ -49,6 +56,14 @@ Comments must add context the code cannot convey (constraints, reasons, gotchas)
 - Extract a repeated sub-expression into a named local, for readability and single evaluation.
 - One variable per concept, reused across mutually exclusive phases. Sequential, never-concurrent phases can share one variable.
 - Do not keep vestigial vars. A member that is only assigned then immediately read should be a local or inlined. A member cleared in cleanup but always reassigned before use is dead housekeeping.
+
+## Investigation
+
+- Investigate depth-first: when pointed at a specific function or location, exhaust it before looking up other functions or files for context.
+- Avoid doing full read on large (over 100kb) non-code/non-docs files (various data files, e.g. csv, resources files, etc.). If a large data file needs to be accessed, try to grep for necessary data first, otherwise ask for permission to do a full read.
+- Be biased towards problems existing within current project code. Do not investigate third party code/libraries without permission.
+- Looking up API definition is ok. Looking up online docs is ok.
+- When runtime behavior isn't settled by the docs (third party code, callback/frame ordering, timing, event sequencing, etc.), run it with debug output to observe what actually happens, rather than speculating or decompiling internals. Debug output is scaffolding: remove it once the behavior is understood.
 
 ## Scripting
 
