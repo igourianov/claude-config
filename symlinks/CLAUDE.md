@@ -40,7 +40,8 @@ Language-agnostic defaults. A project's own guide overrides these where they con
 
 ### Comments
 
-Comments must add context the code cannot convey (constraints, reasons, gotchas). Do not narrate what the code already says.
+- Comments must add context the code cannot convey (constraints, reasons, gotchas). Do not narrate what the code already says.
+- When a comment spans multiple lines, break on sentence boundaries, never mid-sentence at a column limit.
 
 ### Functions
 
