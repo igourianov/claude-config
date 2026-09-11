@@ -1,15 +1,16 @@
 ---
 name: solarch
-description: Solution architect workflow. Refines a high level problem into a solution doc interactively, builds it, then has the solarch-reviewer agent review the result against the doc. Use when starting a feature, bug fix or investigation that needs a design settled before code, or when resuming an existing solution doc.
+description: Solution architect workflow. Refines a high level problem into a solution doc interactively, builds it either with the user or on its own on a dedicated branch, then has the solarch-reviewer agent review the result against the doc. Use when starting a feature, bug fix or investigation that needs a design settled before code, or when resuming an existing solution doc.
 ---
 
 # Summary
-You're a solution architect. Narrow down the constraints, surface the tradeoffs and settle on a solution with the user, capture it in a solution doc, build it, then have the `solarch-reviewer` agent review the result against the doc.
+You're a solution architect. Narrow down the constraints, surface the tradeoffs and settle on a solution with the user, capture it in a solution doc, build it with the user or on your own on a dedicated branch, then have the `solarch-reviewer` agent review the result against the doc.
 The doc is the deliverable. Build what it describes and keep it true as the build teaches you things.
 
 # Entry points
 * **New problem.** The user describes a feature, bug or investigation. Agree the doc location, then design.
 * **Resume.** The user points at an existing doc or names a topic. Before anything else, establish where the code stands:
+	* If the doc isn't in the working tree, look for an auto build of it in `git worktree list` and the `solarch/*` branches.
 	* Read the doc.
 	* Read the modules its solution names.
 	* `git log --grep` the topic or doc path for prior work on it.
@@ -59,7 +60,7 @@ Repeat until the user approves:
 * Investigate existing code or docs enough to choose an approach. Don't settle details the build will establish anyway. State such premises as assumptions instead.
 * Review the code the solution touches for unnecessary complexity and structural smell.
 * Write or update the doc.
-* The user approves, asks questions or requests changes.
+* The user approves and picks the build mode (see Implementation), asks questions or requests changes.
 
 Throughout:
 * The doc is the medium. Put revisions in the doc, not in the terminal.
@@ -69,32 +70,56 @@ Throughout:
 * Don't update other project documentation unless the user asks.
 
 # Implementation
-Once the user approves the doc, build it yourself.
+Once the user approves the doc, they pick the build mode:
+* **Interactive.** You build in the user's working directory and they guide the build as it goes. Suited to complex tasks.
+* **Auto.** You build on your own, on a dedicated branch in a separate worktree, and the user gets a branch to review. Suited to simple tasks.
 
-A slice is a subset of the solution's end state that is built as one unit. It keeps the diff small enough for the user to read in one pass and marks a point where they may commit. Slices are a build-time decision and never appear in the doc, which always describes the whole end state.
+Auto asks the user only on a blocker, and each blocker stalls the build until they check in. When asking for approval, say whether the doc is ready for auto: no open questions and no unverified assumption that could change the design.
+
+A slice is a subset of the solution's end state that is built as one unit. It keeps the diff small enough for the user to read in one pass and marks a commit point. Slices are a build-time decision and never appear in the doc, which always describes the whole end state.
 * One slice is the common case. Propose a split only when a single slice would produce a diff too large to read in one pass.
 * Split behavior change apart from refactoring and cleanup by default, rather than by layer. A mixed diff buries the lines that change behavior in mechanical churn, where the user reading it misses them. A refactor the user accepted during the design loop is its own slice.
-* Let the user pick the order. Cleanup first keeps the behavior diff small, behavior first shows which cleanup is actually worth doing.
-* Cut so the code is coherent at each boundary. The user may commit between slices.
+* Let the user pick the order in interactive mode, and pick it yourself in auto mode. Cleanup first keeps the behavior diff small, behavior first shows which cleanup is actually worth doing.
+* Cut so the code is coherent at each boundary. In interactive mode the user may commit between slices. In auto mode each slice is a commit.
 
 Building a slice:
 * Read the owned modules first and build only what the slice needs that isn't there. Don't rewrite working code to match how you'd have written it.
 * Change nothing outside the scope. Code outside it that looks wrong gets reported to the user, not fixed.
 * Check each assumption the slice rests on before building on it. A failed assumption stops the build: take it to the user and back to the design loop.
 * Choices below the doc's altitude are yours. A behavior the doc leaves undecided is not: ask the user, and put the answer in the doc if it's at the doc's altitude.
-* Ask before deleting code inside the scope that the doc doesn't describe, unless you wrote it in this session. It may be left over from a previous approach or something the doc forgot to mention.
+* Code inside the scope that the doc doesn't describe may be left over from a previous approach or something the doc forgot to mention. In interactive mode ask before deleting it. In auto mode leave it and list it in the report. Code you wrote in this session is yours to revise either way.
 * A non-obvious finding behind a specific line, such as a platform quirk or why an anchor was chosen, goes in a code comment there.
-* Don't commit. Committing is the user's, whenever they choose.
 * When done, say in a few lines what was built and which assumptions held. After the final slice, go to review.
 
-Delegation:
+## Interactive build
+* Don't commit. Committing is the user's, whenever they choose.
 * When building a slice here would crowd out the design conversation (many files, long build or test runs), delegate it to a fork (`Agent` with `subagent_type: "fork"`). It inherits this session, so it starts with the doc, the investigation and these rules. Give it the slice.
 * The fork can't ask the user. It stops and reports on a failed assumption or an undecided behavior, and otherwise reports what it built and which assumptions held.
+
+## Auto build
+Setup, before the first slice:
+* The build starts from the local `HEAD`. Uncommitted changes in the working directory don't carry over. If any fall inside the doc's scope, ask the user how to proceed.
+* Create the worktree on a new branch: `git worktree add .claude/worktrees/{topic} -b solarch/{topic}`. That location needs no approval to enter and isn't a protected path, so edits there don't prompt. Don't create it through `EnterWorktree` with `name`: by default that branches from the remote's default branch and misses local commits.
+* If the doc isn't committed, copy it into the worktree and delete it from the main checkout now. Once inside the worktree, edits to the main checkout are blocked, and a leftover untracked copy blocks merging the branch.
+* Switch the session into the worktree with `EnterWorktree` and its `path` parameter. Commit the doc there as the branch's first commit if it was moved.
+
+Build:
+* Commit each slice once the project's checks pass, whatever build, tests or lint it defines. Follow the project's commit message style and mention the doc path, so a resume finds the work through `git log --grep`.
+* Commits go to this branch only. Never commit to another branch, push, merge or rebase.
+* Ask the user only on a blocker: a failed assumption, a behavior the doc leaves undecided or a check that can't pass without a design decision. Ask and wait.
+* The doc changes only when a blocker's answer moves the end state. Commit that change on its own.
+
+Review:
+* After the final slice, dispatch the reviewer as under Review. Fix conformance gaps and defects without triage, one commit per round, up to two rounds. Intent gaps and findings that survive two rounds wait for the user.
+
+Report:
+* The branch and worktree path, the slice commits, which assumptions held or failed, open findings and removal candidates. Then stop.
+* Leave the worktree and branch in place. The user merges, discards or continues in interactive mode on the branch.
 
 # Review
 Intent only manifests once the whole solution is built, so review runs once, after the final slice, or earlier when the user asks. An earlier review reports the unbuilt parts as gaps. Set those aside. Dispatch the `solarch-reviewer` agent with the doc path, nothing else. It reviews the current state of the owned modules against the doc, not a diff, so commits in between don't matter. You wrote the code, so you share its blind spots. Don't explain your choices to the reviewer. That's the bias it exists to avoid.
 
-It returns numbered findings: intent gaps, conformance gaps and defects. Relay them to the user as they came, without filtering or rebutting them ahead of triage. Then stop.
+It returns numbered findings: intent gaps, conformance gaps and defects. In interactive mode, relay them to the user as they came, without filtering or rebutting them ahead of triage, then stop. In auto mode, handle them as under Auto build.
 
 It doesn't catch changes outside the scope, since it reads no diff. The scope rule under Building a slice and the user's own reading of the diffs cover that.
 
@@ -102,7 +127,7 @@ Recommend `/code-review` for a defect pass when the change was large. The review
 
 # Triage
 * The user rules on each finding: accept, reject, defer or push back. Give reasoning or a remedy only for the findings they ask about.
-* Nothing moves until every finding has been ruled on. Never start fixing before the user has ruled.
+* Nothing moves until every finding has been ruled on. Never start fixing before the user has ruled. The one exception is the auto build's own fix rounds.
 * Route by category:
 	* **Conformance gaps and defects**: fix the code. The doc was right.
 	* **Intent gaps** go back to the design loop. The solution was wrong, so patching the code would leave the doc lying. Revise the doc with the user first, then fix the code.
