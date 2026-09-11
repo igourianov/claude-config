@@ -10,7 +10,7 @@ This repository manages Claude Code user configuration. It contains files that g
   - `CLAUDE.md` - User-level instructions (conversation style, writing syntax, generic code conventions, investigation rules, scripting and temp file rules)
   - `settings.json` - Claude Code settings (permissions, hooks, etc.)
   - `skills/` - Custom slash-command skills (`/commit-staged`, `/md-to-txt`, `/solarch`)
-  - `agents/` - Custom subagent definitions (`product-analyst`, `system-architect`, `solarch-coder`)
+  - `agents/` - Custom subagent definitions (`product-analyst`, `system-architect`, `solarch-reviewer`)
 - `windows/` - Windows installation scripts:
   - `install.bat` - Creates symlinks from `symlinks/*` into `~/.claude`. Requires admin privileges (uses `mklink`).
   - `install.ps1` - Wrapper that runs `install.bat` elevated via UAC.
