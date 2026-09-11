@@ -2,14 +2,13 @@
 
 ## Conversation
 
-- Always respond with direct, clean messages. Do not over explain.
-- Do not qualify my inquiries with "Excellent question", "Great idea", "Fair point", "Good catch" or similar. Respond directly to my claims/inquiries.
+- Always respond with direct, clean messages. Do not explain or provide examples unless asked to.
+- Do not use metaphors, analogies or pop culture references. Use plain language.
+- Do not qualify my inquiries with "Excellent question", "Great idea", "Fair point", "Good catch" or similar. Get straight to response.
 - Do not repeat back what I said, unless it is to confirm you understood me correctly.
-- Do not provide detailed examples unless requested.
-- Do not apologize if you've made a mistake. Provide remediation steps.
-- Only make factual statements when you have a very high degree of certainty in the answer. Otherwise say you're not sure. Only speculate when specifically asked to.
-- Always prioritize objective truth over agreeing with me.
-- When I ask a question, respond with an answer. Do not take action unless I explicitly request it. E.g. `why have you done X?` is a request for explanation, NOT a request to change the `X` to something else.
+- Do not apologize if you've made a mistake. Admit. Suggest remediation steps.
+- My questions are never calls to action. Reply with answer. Do not take action that was not requested. E.g. `why have you done X?` is a request for reasoning for `X`, NOT a request to change the `X` to something else or to undo it.
+
 
 ## Writing syntax
 
@@ -20,7 +19,7 @@
 ## Memory
 
 Do not use the auto memory system. Never read from or write to project auto memory files or MEMORY.md.
-Whenever I ask you to remember something, update CLAUDE.md or rules files in either project root or user directory, depending on the context of the change.
+Whenever I ask you to remember something, update CLAUDE.md or rules files in either project root or user directory, depending on the scope of the change. Ask where to save if the scope is unclear.
 
 ## Code
 
@@ -30,7 +29,8 @@ Language-agnostic defaults. A project's own guide overrides these where they con
 
 - Follow the style established in the file and function being edited: spacing, naming, indentation, casing. It wins over these defaults.
 - Be biased towards simplicity and minimal footprint, but only where it still meets the requirements.
-- Avoid deep nesting. Keep the structure flat whichever branching style the file uses.
+- Do not mix `if/elseif` condition trees with early returns within the same function. Pick one approach per function.
+- Avoid deep `if/elseif` logic nesting. Keep the structure flat using whichever branching style the file uses.
 - Avoid needless low-level waste, e.g. multiple dictionary lookups on the same key, variant boxing/unboxing. Don't sacrifice clarity for micro-optimization unless it's a hot path.
 
 ### Formatting
@@ -48,7 +48,6 @@ Language-agnostic defaults. A project's own guide overrides these where they con
 - Inline single-use helpers. Keep a helper only when shared by 2+ callers or when it genuinely clarifies. Fold one-call helpers back into the call site.
 - Collapse two functions that differ only by a constant into one parameterized function (e.g. show/hide pair to `set_shown(shown)`).
 - Name a function for what it does, not for the path that triggered it. A single cleanup routine can serve both normal completion and teardown.
-- Do not mix `if/elseif` condition trees with early returns within the same function. Pick one approach per function.
 - A bool param that fully determines behavior is borderline. Fine when the paths share most logic. If they diverge heavily, prefer two functions.
 
 ### Variables
@@ -60,11 +59,11 @@ Language-agnostic defaults. A project's own guide overrides these where they con
 
 ## Investigation
 
-- Investigate depth-first: when pointed at a specific function or location, exhaust it before looking up other functions or files for context.
-- Avoid doing full read on large (over 100kb) non-code/non-docs files (various data files, e.g. csv, resources files, etc.). If a large data file needs to be accessed, try to grep for necessary data first, otherwise ask for permission to do a full read.
-- Be biased towards problems existing within current project code. Do not investigate third party code/libraries without permission.
-- Looking up API definition is ok. Looking up online docs is ok.
-- When runtime behavior isn't settled by the docs (third party code, callback/frame ordering, timing, event sequencing, etc.), run it with debug output to observe what actually happens, rather than speculating or decompiling internals. Debug output is scaffolding: remove it once the behavior is understood.
+- Investigate depth-first: when pointed at a specific function or file, exhaust it before looking up other functions or files for context.
+- Avoid doing full read on large (over 100kb) non-code/non-docs files (various data files, logs, resources files, etc.). If a large data file needs to be accessed, try to grep for necessary data first, otherwise ask for permission to do a full read.
+- Be biased towards problems existing within current project code or within code site I point to. Do not investigate third party code/libraries without permission.
+- Looking up API definitions or online docs is ok.
+- When runtime behavior isn't settled by the docs (third party code, callback/frame ordering, thread timing, event sequencing, etc.), recommend debug output to observe what actually happens, rather than speculating or decompiling internals. Remove it once the behavior is understood.
 
 ## Scripting
 
