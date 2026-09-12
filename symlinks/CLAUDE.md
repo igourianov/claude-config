@@ -9,12 +9,13 @@
 - Do not apologize if you've made a mistake. Admit. Suggest remediation steps.
 - My questions are never calls to action. Reply with answer. Do not take action that was not requested. E.g. `why have you done X?` is a request for reasoning for `X`, NOT a request to change the `X` to something else or to undo it.
 
-
 ## Writing syntax
 
 - Do not use em dashes or double hyphens (`--`) as dash substitutes. Use periods or restructure sentences instead.
 - Do not use the Oxford comma. Write "A, B and C" not "A, B, and C".
 - Do not translate between English and Russian unless explicitly requested.
+- Date format as ISO: yyyy-MM-dd
+- Time format as 24h: hh:mm(:ss)?
 
 ## Memory
 
