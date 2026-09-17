@@ -11,15 +11,16 @@ This repository manages Claude Code user configuration. It contains files that g
   - `settings.json` - Claude Code settings (permissions, hooks, etc.)
   - `skills/` - Custom slash-command skills (`/commit-staged`, `/md-to-txt`, `/solarch`)
   - `agents/` - Custom subagent definitions (`product-analyst`, `system-architect`, `solarch-reviewer`)
-- `windows/` - Windows installation scripts:
-  - `install.bat` - Creates symlinks from `symlinks/*` into `~/.claude`. Requires admin privileges (uses `mklink`).
-  - `install.ps1` - Wrapper that runs `install.bat` elevated via UAC.
+- `windows/` - Windows installation:
+  - `install.ps1` - Creates the symlinks in `~/.claude`. Self-elevating via UAC.
+- `docs/solutions/` - Solution docs produced by `/solarch`.
 
 ## Installation
 
-Run `windows/install.ps1`. This prompts for UAC elevation, then symlinks everything from `symlinks/` into `~/.claude`.
+Run `windows/install.ps1`. It prompts for UAC elevation, then links everything from `symlinks/` into `~/.claude`. Every entry under `symlinks/`, file or directory, becomes a symlink of the same name.
 
 ## Key Details
 
-- `install.bat` uses `mklink` which requires elevated privileges. Always run through `windows/install.ps1` or an admin command prompt.
-- After adding or modifying files under `symlinks/`, re-run install only if adding new top-level entries. Existing symlinks automatically reflect changes to their targets.
+- Symlink creation requires elevated privileges, so the script relaunches itself as administrator. It also bypasses execution policy on that relaunch.
+- Re-run install only when adding a new top-level entry under `symlinks/`. Existing symlinks automatically reflect changes to their targets.
+- Claude Code syncs the skills published to your account into `~/.claude/skills/synced/`, which lands in `symlinks/skills/synced/` through the `skills` symlink. It is a disposable cache, so `.gitignore` excludes it. If Claude ever writes something else under `skills/`, add it there too.
